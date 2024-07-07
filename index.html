@@ -3,9 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="https://js.live.net/v7.2/OneDrive.js"></script>
+  
   <title>VocaList</title>
 </head>
 <body>
-  
+  <script type="text/javascript">
+    function launchOneDrivePicker(){
+
+      var odOptions = {
+        clientId: "7d4f98f4-2d0a-4b1a-a4ef-a66867f4f746",
+        action: "query",
+        multiSelect: true,
+        advanced: {
+          redirectUri: "https://127.0.0.1:5501/callback.html", 
+          endpointHint: "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
+        },
+        success: function(files) { alert('succesed') },
+        cancel: function() { alert('failed') },
+        error: function(error) { console.log(error) }
+      };
+
+      OneDrive.open(odOptions);
+    }
+  </script>
+  <button onClick="launchOneDrivePicker()">Open from OneDrive</button>
 </body>
 </html>
