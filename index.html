@@ -3,30 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script type="text/javascript" src="https://js.live.net/v7.2/OneDrive.js"></script>
-  
+  <script type="text/javascript" src="./js/onedrive.js"></script>
   <title>VocaList</title>
 </head>
 <body>
   <script type="text/javascript">
-    function launchOneDrivePicker(){
 
-      var odOptions = {
-        clientId: "7d4f98f4-2d0a-4b1a-a4ef-a66867f4f746",
-        action: "query",
-        multiSelect: true,
-        advanced: {
-          redirectUri: "https://127.0.0.1:5501/callback.html", 
-          endpointHint: "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
-        },
-        success: function(files) { alert('succesed') },
-        cancel: function() { alert('failed') },
-        error: function(error) { console.log(error) }
-      };
+    var appInfo = {
+      "clientId": "7d4f98f4-2d0a-4b1a-a4ef-a66867f4f746",
+      "redirectUri": "https://127.0.0.1:5501/callback.html",
+      "scopes": "user.read files.read files.read.all sites.read.all",
+      "authServiceUri": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
+    };
 
-      OneDrive.open(odOptions);
+    var access_token = null;
+
+    function challengeForAuth() {
+      var url =
+        appInfo.authServiceUri +
+        "?client_id=" + appInfo.clientId +
+        "&response_type=token" +
+        "&redirect_uri=" + encodeURIComponent(appInfo.redirectUri);
+
+      if (appInfo.scopes)
+        url = url + "&scope=" + encodeURIComponent(appInfo.scopes);
+
+      var popup = window.open(url);
+      
+      if (!popup) {
+        alert("failed to pop up auth window");
+      }
     }
+
+    function onAuthenticated(token, window) {
+      if (token) {
+        document.getElementById('token').innerHTML = token; 
+      }
+      else {
+        alert('failed to get access token');
+      }
+    }
+
+
   </script>
-  <button onClick="launchOneDrivePicker()">Open from OneDrive</button>
+  <button onClick="challengeForAuth()">Open from OneDrive</button>
+  <p id="token"></p>
 </body>
 </html>

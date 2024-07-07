@@ -4,6 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>callback</title>
+  <script>
+
+      (function ensureHttps() {
+        if (window.location.protocol != "https:" && window.location.protocol != "file:" && window.location.hostname != "localhost") {
+          window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
+        }
+      })();
+
+      if (window.location.hash) {
+        var authResponse = window.location.hash.substring(1);
+        var authInfo = JSON.parse(
+          '{' + authResponse.replace(/([^=]+)=([^&]+)&?/g, '"$1":"$2",').slice(0,-1) + '}',
+          function(key, value) { return key === "" ? value : decodeURIComponent(value); });
+
+        var token = authInfo["access_token"];
+
+        if (token)
+        {
+          window.opener.onAuthenticated(token, window);
+          window.close(); 
+        }
+
+      }
+      else {
+        alert("failed to receive auth token");
+      }
+  </script>
 </head>
 <body>
   
